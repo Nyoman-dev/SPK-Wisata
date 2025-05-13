@@ -1,0 +1,25 @@
+@import "tailwindcss";
+@source "../views";
+
+@import "flowbite/src/themes/default";
+@plugin "flowbite/plugin";
+@source "../../node_modules/flowbite";
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-fredoka: "Fredoka One", cursive;
+}
+.nav {
+    @apply block py-2 px-3 text-[#29581F] rounded-sm hover:bg-gray-100 md:hover:bg-transparent hover:text-[#F8C650] md:p-0;
+}
+
+.side {
+    @apply flex items-center p-2 text-white rounded-lg hover:bg-[#1E1E1E];
+}
+button[aria-expanded="true"] {
+    @apply bg-[#0D0D0D] flex items-center p-2 text-white rounded-lg hover:bg-[#1E1E1E] gap-3;
+}
