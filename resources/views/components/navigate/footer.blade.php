@@ -17,11 +17,9 @@
                 <li>
                     <a href="/deskripsi" class="hover:underline me-4 md:me-6">Deskripsi</a>
                 </li>
-                @guest
                 <li>
                     <a href="/login" target="_blank" class="hover:underline">Login</a>
                 </li>
-                @endguest
             </ul>
         </div>
         <hr class="my-6 border-[#142c0e] sm:mx-auto lg:my-8" />

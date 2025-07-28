@@ -1,0 +1,14 @@
+/* Override Flowbite accordion open background color */
+[data-accordion="open"] [aria-expanded="true"] {
+    background-color: #0d0d0d !important;
+}
+
+/* Also override hover background on open */
+[data-accordion="open"] [aria-expanded="true"]:hover {
+    background-color: #1e1e1e !important;
+}
+
+/* Override background of the accordion body when shown */
+[data-accordion="open"] > ul[aria-labelledby] {
+    background-color: #0d0d0d !important;
+}

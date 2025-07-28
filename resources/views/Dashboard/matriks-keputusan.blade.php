@@ -61,14 +61,14 @@
                 </td>
                 @endforeach
                 <td class="px-6 py-4 flex gap-1.5">
-                  <button data-modal-target="edit-modal" data-modal-toggle="edit-modal"><svg class="w-6 h-6 text-[#A6FF00]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <button data-modal-target="edit-modal-{{ $kodeAlternatif }}" data-modal-toggle="edit-modal-{{ $kodeAlternatif }}"><svg class="w-6 h-6 text-[#A6FF00]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
                   </svg>
                   </button>
               </td>
           </tr>
           {{-- Popup Edit --}}
-          <div id="edit-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+          <div id="edit-modal-{{ $kodeAlternatif }}" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
             <div class="relative p-4 w-full max-w-md max-h-full">
                 <!-- Modal content -->
                 <div class="relative bg-[#0D0D0D] rounded-lg shadow">
@@ -77,7 +77,7 @@
                         <h3 class="text-lg font-bold text-white">
                           Ubah Data Matriks
                         </h3>
-                        <button type="button" class="text-white bg-transparent hover:bg-[#A6FF00] hover:text-[#0D0D0D] rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center" data-modal-toggle="edit-modal">
+                        <button type="button" class="text-white bg-transparent hover:bg-[#A6FF00] hover:text-[#0D0D0D] rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center" data-modal-toggle="edit-modal-{{ $kodeAlternatif }}">
                             <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                             </svg>
@@ -97,9 +97,12 @@
                             <input type="hidden" name="kode_kriteria[]" value="{{ $kriteria->kode_kriteria }}">
                             <div class="col-span-2 flex items-baseline">
                               <label for="nilai_{{ $kriteria->kode_kriteria }}" class="block w-3/5 mb-2 text-sm font-semibold text-gray-700 dark:text-white">{{ $kriteria->nama_kriteria }}</label>
-                              <select id="nilai_{{ $kriteria->kode_kriteria }}" name="nilai[{{ $kriteria->kode_kriteria }}][]" class="bg-[#1E1E1E] border border-[#A6FF00] text-white text-sm rounded-lg focus:ring-[#A6FF00] focus:border-[#A6FF00] block w-full p-2.5">
+                              <select id="nilai_{{ $kriteria->kode_kriteria }}" name="nilai[{{ $kriteria->kode_kriteria }}]" class="bg-[#1E1E1E] border border-[#A6FF00] text-white text-sm rounded-lg focus:ring-[#A6FF00] focus:border-[#A6FF00] block w-full p-2.5">
                                 @foreach ($kriteria->nilaibobot as $bobot)
-                                <option value="{{ $bobot->nilai }}">{{ $bobot->nama }}</option>
+                                <option value="{{ $bobot->nilai }}"
+                                    {{ $nilai['value'][$kriteria->kode_kriteria] == $bobot->nilai ? 'selected' : '' }}>
+                                    {{ $bobot->nama }}
+                                </option>
                                 @endforeach
                               </select>
                             </div>

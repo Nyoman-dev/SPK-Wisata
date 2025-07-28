@@ -49,4 +49,4 @@ Route::resource('/dashboard/deskripsi', DeskripsiController::class)->middleware(
 Route::resource('/dashboard/profil', ProfilController::class)->middleware('auth');
 
 Route::get('/filter', [FilterController::class, 'index'])->name('Pengunjung.filter');
-Route::get('/filter/wisata', [FilterController::class, 'filter'])->name('Pengunjung.filter');
+Route::post('/filter-wisata', [FilterController::class, 'filter']);
