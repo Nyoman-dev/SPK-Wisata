@@ -15,9 +15,15 @@
         name="filter"
         class="border border-[#F8C650] rounded-md py-2 px-3 text-[#18252D] text-sm w-full sm:w-60"
       >
-        <option value="waktu">Waktu Tempuh Tercepat</option>
-        <option value="jarak">Jarak Terdekat</option>
-        <option value="fasilitas">Fasilitas Lengkap</option>
+        <option value="C01-1">Waktu Tempuh (<= 10 min)</option>
+        <option value="C01-3">Waktu Tempuh (11 - 20 min)</option>
+        <option value="C01-5">Waktu Tempuh (> 10 min)</option>
+        <option value="C02-1">Jarak Tempuh (<= 1 km)</option>
+        <option value="C02-3">Jarak Tempuh (2 - 5 km)</option>
+        <option value="C02-5">Jarak Tempuh (> 5 km)</option>
+        <option value="C03-5">Fasilitas Lengkap</option>
+        <option value="C03-3">Fasilitas Cukup Lengkap</option>
+        <option value="C03-1">Fasilitas Tidak Lengkap</option>
       </select>
       <button
         type="submit"
