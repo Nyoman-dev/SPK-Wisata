@@ -24,7 +24,7 @@
     </div>
     @endforeach
     <div class="md:w-1/2 relative flex justify-center md:justify-end">
-      <img alt="jami" class="w-[600px] max-w-full h-auto rounded-[50%_50%_50%_50%/40%_30%_80%_80%]" height="600" src="img/jami.jpeg" width="600"/>
+      <img alt="jami" class="w-[600px] max-w-full h-auto rounded-[50%_50%_50%_50%/40%_30%_80%_80%]" height="600" src="img/profil.png" width="600"/>
       <a href="/deskripsi" class="absolute top-[50%] left-[30%] -translate-y-1/2 bg-[#c6f4c6] rounded-full px-8 py-4 max-w-[180px] text-center">
         <span class="font-anton text-[#7f72bb] text-[20px] sm:text-[22px] md:text-[24px] leading-tight block">
         Explore
