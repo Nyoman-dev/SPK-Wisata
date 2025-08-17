@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('alamat');
             $table->longText('map');
             $table->text('deskripsi');
+            $table->string('gambar');
             $table->timestamps();
         });
     }

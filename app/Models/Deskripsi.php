@@ -14,6 +14,7 @@ class Deskripsi extends Model
         'alamat',
         'deskripsi',
         'map',
+        'gambar',
     ];
     public function sluggable(): array
     {

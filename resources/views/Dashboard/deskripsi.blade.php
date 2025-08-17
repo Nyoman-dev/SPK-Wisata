@@ -133,7 +133,7 @@
                           </button>
                       </div>
                       <!-- Modal body -->
-                      <form id="edit-form-{{ $item->id }}" class="p-4 md:px-5 -mt-6" method="POST" action="/dashboard/deskripsi/{{ $item->id }}">
+                      <form id="edit-form-{{ $item->id }}" enctype="multipart/form-data" class="p-4 md:px-5 -mt-6" method="POST" action="/dashboard/deskripsi/{{ $item->id }}">
                         @method('put')
                         @csrf
                         <div class="grid gap-4 mb-4 grid-cols-2 p-4 md:p-5">
@@ -144,6 +144,18 @@
                           <div class="col-span-2">
                             <label for="alamat" class="block mb-2 text-sm font-medium text-white">Alamat</label>
                             <input value="{{ $item->alamat }}" type="text" name="alamat" id="alamat" class="bg-[#1E1E1E] border border-[#A6FF00] text-white text-sm rounded-lg focus:ring-[#A6FF00] focus:border-[#A6FF00] block w-full p-2.5" placeholder="Nama Tempat Wisata" required="">
+                          </div>
+                          <div class="col-span-2">
+                            <label class="block mb-2 text-sm font-medium text-white" for="gambar">Gambar</label>
+                            <input
+                              class="block w-full text-sm text-white border border-[#A6FF00] rounded-lg cursor-pointer bg-[#1E1E1E] dark:text-gray-400 focus:outline-none"
+                              aria-describedby="gambar"
+                              id="gambar"
+                              name="gambar"
+                              type="file"
+                              accept=".png, .jpg, .jpeg"
+                            />
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="gambar">SVG, PNG, JPG or GIF</p>
                           </div>
                           <div class="col-span-2">
                             <label for="map" class="block mb-2 text-sm font-medium text-white">Link Map</label>
@@ -184,7 +196,7 @@
           </button>
         </div>
         <!-- Modal body -->
-        <form action="/dashboard/deskripsi" method="POST" class="p-4 md:p-5">
+        <form action="/dashboard/deskripsi" method="POST" enctype="multipart/form-data" class="p-4 md:p-5">
           @csrf
           <div class="grid gap-4 mb-4 grid-cols-2">
             <div class="col-span-2">
@@ -194,6 +206,18 @@
             <div class="col-span-2">
               <label for="alamat" class="block mb-2 text-sm font-medium text-white">Alamat</label>
               <input type="text" name="alamat" id="alamat" class="bg-[#1E1E1E] border border-[#A6FF00] text-white text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="Jln. Tempat Wisata" required="">
+            </div>
+            <div class="col-span-2">
+              <label class="block mb-2 text-sm font-medium text-white" for="gambar">Gambar</label>
+              <input
+                class="block w-full text-sm text-white border border-[#A6FF00] rounded-lg cursor-pointer bg-[#1E1E1E] dark:text-gray-400 focus:outline-none"
+                aria-describedby="gambar"
+                id="gambar"
+                name="gambar"
+                type="file"
+                accept=".png, .jpg, .jpeg"
+              />
+              <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="gambar">SVG, PNG, JPG or GIF</p>
             </div>
             <div class="col-span-2">
               <label for="map" class="block mb-2 text-sm font-medium text-white">Link Map</label>

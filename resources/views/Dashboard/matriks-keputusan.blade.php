@@ -57,7 +57,7 @@
                 </td>
                 @foreach ($kriterias as $kriteria)
                 <td class="px-6 py-4">
-                  {{ $nilai['value'][$kriteria->kode_kriteria] }}
+                  {{ $nilai['value'][$kriteria->kode_kriteria] ?? '-' }}
                 </td>
                 @endforeach
                 <td class="px-6 py-4 flex gap-1.5">

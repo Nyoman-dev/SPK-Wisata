@@ -88,16 +88,16 @@ class HasilController extends Controller
                 'kode_alternatif' => 'required|string',
                 'kode_kriteria' => 'required|array',
                 'nilai' => 'required|array',
-
             ]
         );
         $kodeAlternatif = $validatedData['kode_alternatif'];
-        foreach ($validatedData['kode_kriteria'] as $index => $kodeKriteria) {
+        foreach ($validatedData['kode_kriteria'] as $kodeKriteria) {
             $kriteria = Nilai::where('kode_alternatif', $kodeAlternatif)
-                ->where('kode_kriteria', $kodeKriteria)->first();
+                ->where('kode_kriteria', $kodeKriteria)
+                ->first();
             if ($kriteria) {
                 $kriteria->update([
-                    'nilai' => $validatedData['nilai'][$kodeKriteria][0],
+                    'nilai' => $validatedData['nilai'][$kodeKriteria],
                 ]);
             } else {
                 return redirect()->back()->withErrors(['error' => 'Data tidak ditemukan untuk Kode Alternatif: ' . $kodeAlternatif . ' dan Kode Kriteria: ' . $kodeKriteria]);

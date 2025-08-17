@@ -175,11 +175,11 @@
           <div class="grid gap-4 mb-4 grid-cols-2">
             <div class="col-span-2">
               <label for="judul" class="block mb-2 text-sm font-medium text-white">Judul</label>
-              <input type="text" name="judul" id="judul" class="bg-[#1E1E1E] border border-[#A6FF00] text-white text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="Nama Tempat Wisata" required="">
+              <input type="text" name="judul" id="judul" class="bg-[#1E1E1E] border border-[#A6FF00] text-white text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="Judul" required="">
             </div>
             <div class="col-span-2">
               <label for="deskripsi" class="block mb-2 text-sm font-medium text-white">Deskripsi</label>
-              <textarea name="deskripsi" id="deskripsi" rows="4" class="block p-2.5 w-full text-sm text-white bg-[#1E1E1E] rounded-lg border border-[#A6FF00] focus:ring-[#A6FF00] focus:border-[#A6FF00] " required="" placeholder="Deskripsi Wisata"></textarea>
+              <textarea name="deskripsi" id="deskripsi" rows="4" class="block p-2.5 w-full text-sm text-white bg-[#1E1E1E] rounded-lg border border-[#A6FF00] focus:ring-[#A6FF00] focus:border-[#A6FF00] " required="" placeholder="Deskripsi"></textarea>
             </div>
           </div>
           <button type="submit" class="text-[#0D0D0D] inline-flex items-center bg-[#A6FF00] hover:bg-[#9CF268] focus:ring-4 focus:outline-none focus:ring-[#9CF268] font-medium rounded-lg text-sm px-5 py-2.5 text-center">

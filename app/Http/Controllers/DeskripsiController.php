@@ -30,13 +30,18 @@ class DeskripsiController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
+        $validated = $request->validate([
             'judul' => 'required | string | min:3',
             'alamat' => 'required',
             'map' => 'required',
             'deskripsi' => 'required',
+            'gambar' => 'required|image|mimes:jpeg,png,jpg,gif'
         ]);
-        Deskripsi::create($validatedData);
+        if ($request->hasFile('gambar')) {
+            $filePath = $request->file('gambar')->store('images', 'public');
+            $validated['gambar'] = $filePath;
+        }
+        Deskripsi::create($validated);
         return redirect()->back()->with('success', 'Data berhasil dtambahkan!');
     }
 
@@ -61,13 +66,18 @@ class DeskripsiController extends Controller
      */
     public function update(Request $request, Deskripsi $deskripsi)
     {
-        $validatedData = $request->validate([
+        $validated = $request->validate([
             'judul' => 'required | string | min:3',
             'alamat' => 'required',
             'map' => 'required',
             'deskripsi' => 'required',
+            'gambar' => 'required|image|mimes:jpeg,png,jpg,gif'
         ]);
-        Deskripsi::where('id', $deskripsi->id)->update($validatedData);
+        if ($request->hasFile('gambar')) {
+            $filePath = $request->file('gambar')->store('images', 'public');
+            $validated['gambar'] = $filePath;
+        }
+        Deskripsi::where('id', $deskripsi->id)->update($validated);
         return redirect()->back()->with('success', 'Data berhasil diperbarui!');
     }
 
