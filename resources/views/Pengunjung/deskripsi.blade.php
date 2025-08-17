@@ -8,8 +8,8 @@
     </div>
     @foreach ($data as $item)
       @if ($loop->index % 2 == 0)
-      <div class="py-30 bg-[#F8C650] relative overflow-hidden min-h-[400px] flex items-center justify-between px-6">
-        <div class="w-1/2 mt-10 md:mt-0 md:ml-16 max-w-xl text-[#1a202c]">
+      <div class="py-30 bg-[#F8C650] relative overflow-hidden min-h-[400px] flex items-center justify-between px-1">
+        <div class="w-1/3 mt-10 md:mt-0 md:ml-16  text-[#1a202c]">
           <h1 class="font-bold text-[40px] leading-[44px] text-[#1f3f1f] uppercase">
             {{ $item->judul }}
           </h1>
@@ -20,7 +20,7 @@
             {{ $item->deskripsi }}
           </p>
         </div>
-        <div class="flex items-center justify-center gap-2">
+        <div class="flex items-center justify-center gap-2 mr-10">
           <img src="{{ asset('storage/' . $item->gambar) }}" alt="{{ $item->judul }}" class="w-[400px] h-[300px] object-cover">
           <div>
             {!! $item->map !!}
@@ -28,14 +28,14 @@
         </div>
       </div>
       @else
-      <div class="py-30 relative bg-[#ede9d1] overflow-hidden min-h-[400px] flex items-center justify-between px-6">
-          <div class="flex flex-col md:flex-row items-center justify-between gap-2">
+      <div class="py-30 relative bg-[#ede9d1] overflow-hidden min-h-[400px] flex items-center justify-between px-1">
+          <div class="flex flex-col md:flex-row items-center justify-between gap-2 ml-10">
             <img src="{{ asset('storage/' . $item->gambar) }}" alt="{{ $item->judul }}" class="w-[400px] h-[300px] object-cover">
             <div class="relative w-1/2 max-w-[400px] md:max-w-[480px] flex-shrink-0">
               {!! $item->map !!}
             </div>
           </div>
-          <div class="mt-10 md:mt-0 md:ml-16 max-w-xl text-[#1a202c]">
+          <div class="mt-10 md:mt-0 md:ml-16 w-1/3 text-[#1a202c]">
             <h2 class="font-anton text-[#ff6a3d] text-4xl md:text-5xl leading-tight tracking-tight">
               {{ $item->judul }}
             </h2>
