@@ -14,6 +14,9 @@
                 <li>
                     <a href="/filter" class={{ request()->is('filter') ? 'text-[#F8C650]' : 'nav' }}>Filter</a>
                 </li>
+                {{-- <li>
+                    <a href="/rekomendasi" class={{ request()->is('rekomendasi') ? 'text-[#F8C650]' : 'nav' }}>Rekomendasi Wisata</a>
+                </li> --}}
                 <li>
                     <a href="/deskripsi" class={{ request()->is('deskripsi') ? 'text-[#F8C650]' : 'nav' }}>Deskripsi</a>
                 </li>

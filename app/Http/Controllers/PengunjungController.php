@@ -3,13 +3,63 @@
 namespace App\Http\Controllers;
 
 use App\Models\Nilai;
+use App\Models\Profil;
 use App\Models\Kriteria;
+use App\Models\Deskripsi;
 use App\Models\Alternatif;
+use Illuminate\Http\Request;
 
-class SpkController extends Controller
+class PengunjungController extends Controller
 {
-    public function index()
+    public function home()
     {
+        return view('Pengunjung.home');
+    }
+
+    public function profil()
+    {
+        return view('Pengunjung.profil', [
+            'data' => Profil::all()
+        ]);
+    }
+
+    public function deskripsi()
+    {
+        return view('Pengunjung.deskripsi', [
+            'data' => Deskripsi::all()
+        ]);
+    }
+
+    public function filter()
+    {
+        return view('Pengunjung.filter');
+    }
+
+    public function rekomendasi()
+    {
+        $labelMap = \App\Models\NilaiBobot::select('kode_kriteria', 'nilai', 'nama')
+            ->get()
+            ->groupBy('kode_kriteria')
+            ->map(fn($g) => $g->keyBy('nilai'));
+
+        $kriteriaNilai = [];
+
+        $items = \App\Models\Nilai::with('alternatif')
+            ->orderBy('kode_alternatif')
+            ->orderBy('kode_kriteria')
+            ->get();
+
+        foreach ($items as $n) {
+            $kriteriaNilai[$n->kode_alternatif]['name'] = $n->alternatif->nama_alternatif;
+
+            $nama = $labelMap[$n->kode_kriteria][$n->nilai]->nama ?? '-';
+
+            $kriteriaNilai[$n->kode_alternatif]['value'][$n->kode_kriteria] = [
+                'nilai' => (float) $n->nilai,
+                'nama'  => $nama,
+            ];
+        }
+
         $kriterias = [];
         $alternatifs = [];
         $nilais = [];
@@ -81,7 +131,11 @@ class SpkController extends Controller
         usort($rankedTotal, function ($a, $b) {
             return $a['rank'] <=> $b['rank'];
         });
+        // dd($kriteriaNilai);
 
-        return view('dashboard.hasil-perhitungan', compact('kriterias', 'alternatifs', 'nilais', 'minmax', 'normal', 'terbobot', 'rankedTotal'));
+        return view('Pengunjung.rekomendasi', [
+            'datas' => $kriteriaNilai,
+            'rankedTotal' => $rankedTotal
+        ]);
     }
 }

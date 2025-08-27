@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Nilai;
+use App\Models\Kriteria;
 use App\Models\Alternatif;
 use Illuminate\Http\Request;
 
@@ -42,139 +43,209 @@ class FilterController extends Controller
 
     // public function filter(Request $request)
     // {
-    //     if ($request->has('filter')) {
-    //         dd($request->input('filter'));
+    //     // Ambil nilai dari request
+    //     $filterJarak = $request->input('filter_jarak');
+    //     $filterWaktu = $request->input('filter_waktu');
+    //     $filterFasilitas = $request->input('filter_fasilitas');
+
+    //     // Buat array untuk menyimpan kondisi filter
+    //     $conditions = [];
+
+    //     if ($filterJarak) {
+    //         [$kodeKriteria, $nilai] = explode('-', $filterJarak);
+    //         $conditions[] = ['kode_kriteria' => $kodeKriteria, 'nilai' => $nilai];
     //     }
-    //     $filter = trim($request->input('filter'));
-    //     $kodeKriteriaMap = [
-    //         'waktu' => 'C01',
-    //         'jarak' => 'C02',
-    //         'fasilitas' => 'C03',
-    //     ];
-
-    //     $kode_kriteria = $kodeKriteriaMap[$filter] ?? null;
-
-    //     if (!$kode_kriteria) {
-    //         return response()->json(['error' => 'Filter tidak valid'], 400);
+    //     if ($filterWaktu) {
+    //         [$kodeKriteria, $nilai] = explode('-', $filterWaktu);
+    //         $conditions[] = ['kode_kriteria' => $kodeKriteria, 'nilai' => $nilai];
+    //     }
+    //     if ($filterFasilitas) {
+    //         [$kodeKriteria, $nilai] = explode('-', $filterFasilitas);
+    //         $conditions[] = ['kode_kriteria' => $kodeKriteria, 'nilai' => $nilai];
     //     }
 
-    //     $nilaiData = Nilai::with('alternatif', 'kriteria')
-    //         ->where('kode_kriteria', $kode_kriteria)
-    //         ->orderBy('nilai', in_array($filter, ['waktu', 'jarak']) ? 'asc' : 'desc')
+    //     // Jika tidak ada filter yang dipilih, kembalikan array kosong
+    //     if (empty($conditions)) {
+    //         return response()->json([]);
+    //     }
+
+    //     // Bangun query untuk mencari alternatif yang cocok dengan semua kondisi
+    //     $query = Nilai::query();
+    //     $firstCondition = array_shift($conditions);
+
+    //     // Filter berdasarkan kondisi pertama
+    //     $alternatifIds = $query->where('kode_kriteria', $firstCondition['kode_kriteria'])
+    //         ->where('nilai', $firstCondition['nilai'])
+    //         ->pluck('kode_alternatif');
+
+    //     // Lakukan filter untuk kondisi yang tersisa
+    //     foreach ($conditions as $condition) {
+    //         $alternatifIds = Nilai::whereIn('kode_alternatif', $alternatifIds)
+    //             ->where('kode_kriteria', $condition['kode_kriteria'])
+    //             ->where('nilai', $condition['nilai'])
+    //             ->pluck('kode_alternatif');
+    //     }
+
+    //     // Ambil data nilai lengkap untuk alternatif yang cocok
+    //     $filteredNilais = Nilai::whereIn('kode_alternatif', $alternatifIds)
+    //         ->with('alternatif', 'kriteria')
     //         ->get();
 
-    //     $filteredAlternatifIds = $nilaiData->pluck('kode_alternatif')->toArray();
+    //     // Mengelompokkan data berdasarkan alternatif dan memformat hasilnya
+    //     $result = $filteredNilais->groupBy('kode_alternatif')->map(function ($group) {
+    //         $alternatif = $group->first()->alternatif;
+    //         $kriterias = [];
 
-    //     $allNilaiData = Nilai::with('alternatif', 'kriteria')
-    //         ->whereIn('kode_alternatif', $filteredAlternatifIds)
-    //         ->get();
+    //         foreach ($group as $nilaiItem) {
+    //             // Ambil deskripsi nilai dari model NilaiBobot
+    //             $deskripsiBobot = \App\Models\NilaiBobot::where('kode_kriteria', $nilaiItem->kode_kriteria)
+    //                 ->where('nilai', $nilaiItem->nilai)
+    //                 ->first();
 
-    //     $kategoriMap = [
-    //         'C01' => 'waktu',
-    //         'C02' => 'jarak',
-    //         'C03' => 'fasilitas'
-    //     ];
-
-    //     $groupedData = [];
-
-    //     foreach ($allNilaiData as $nilai) {
-    //         $kode_alternatif = $nilai->kode_alternatif;
-    //         $kategori = $kategoriMap[$nilai->kode_kriteria] ?? 'unknown';
-
-    //         if (!isset($groupedData[$kode_alternatif])) {
-    //             $groupedData[$kode_alternatif] = [
-    //                 'nama_alternatif' => $nilai->alternatif->nama_alternatif ?? '',
-    //                 'waktu' => null,
-    //                 'jarak' => null,
-    //                 'fasilitas' => null,
+    //             $kriterias[] = [
+    //                 'kode_kriteria' => $nilaiItem->kode_kriteria,
+    //                 'nama_kategori' => $nilaiItem->kriteria->nama_kriteria ?? $nilaiItem->kode_kriteria,
+    //                 'deskripsi'     => $deskripsiBobot->nama ?? $nilaiItem->nilai,
     //             ];
     //         }
 
-    //         $groupedData[$kode_alternatif][$kategori] = $nilai->nilai;
-    //     }
+    //         return [
+    //             'nama_alternatif' => $alternatif->nama_alternatif,
+    //             'kriterias'       => $kriterias
+    //         ];
+    //     })->values();
+    //     // dd($result);
 
-    //     $sortedData = collect($groupedData)->sortBy(function ($item) use ($filter) {
-    //         return $item[$filter];
-    //     });
-
-    //     if ($filter === 'fasilitas') {
-    //         $sortedData = $sortedData->reverse();
-    //     }
-
-    //     // Konversi ke array indexed (bukan associative)
-    //     return response()->json(array_values($sortedData->toArray()));
+    //     return response()->json($result);
     // }
 
     public function filter(Request $request)
     {
-        if (!$request->has('filter')) {
-            return response()->json(['error' => 'Parameter filter diperlukan'], 400);
+        $filterJarak = $request->input('filter_jarak');
+        $filterWaktu = $request->input('filter_waktu');
+        $filterFasilitas = $request->input('filter_fasilitas');
+
+        // Buat array untuk menyimpan kondisi filter
+        $conditions = [];
+
+        if ($filterJarak) {
+            [$kodeKriteria, $nilai] = explode('-', $filterJarak);
+            $conditions[] = ['kode_kriteria' => $kodeKriteria, 'nilai' => $nilai];
+        }
+        if ($filterWaktu) {
+            [$kodeKriteria, $nilai] = explode('-', $filterWaktu);
+            $conditions[] = ['kode_kriteria' => $kodeKriteria, 'nilai' => $nilai];
+        }
+        if ($filterFasilitas) {
+            [$kodeKriteria, $nilai] = explode('-', $filterFasilitas);
+            $conditions[] = ['kode_kriteria' => $kodeKriteria, 'nilai' => $nilai];
         }
 
-        // Ambil input dan pisahkan kode_kriteria dan nilai acuan
-        $filterInput = trim($request->input('filter')); // contoh: "C02-5"
-        [$kode_kriteria, $target_nilai] = explode('-', $filterInput);
-
-        // Validasi
-        if (!in_array($kode_kriteria, ['C01', 'C02', 'C03']) || !is_numeric($target_nilai)) {
-            return response()->json(['error' => 'Filter tidak valid'], 400);
+        // Jika tidak ada filter yang dipilih, kembalikan array kosong
+        if (empty($conditions)) {
+            return response()->json([]);
         }
 
-        $target_nilai = (float) $target_nilai;
+        // Bangun query untuk mencari alternatif yang cocok dengan semua kondisi
+        $query = Nilai::query();
+        $firstCondition = array_shift($conditions);
 
-        // Ambil semua data nilai sesuai kriteria
-        $nilaiData = Nilai::with('alternatif', 'kriteria')
-            ->where('kode_kriteria', $kode_kriteria)
+        // Filter berdasarkan kondisi pertama
+        $alternatifIds = $query->where('kode_kriteria', $firstCondition['kode_kriteria'])
+            ->where('nilai', $firstCondition['nilai'])
+            ->pluck('kode_alternatif');
+
+        // Lakukan filter untuk kondisi yang tersisa
+        foreach ($conditions as $condition) {
+            $alternatifIds = Nilai::whereIn('kode_alternatif', $alternatifIds)
+                ->where('kode_kriteria', $condition['kode_kriteria'])
+                ->where('nilai', $condition['nilai'])
+                ->pluck('kode_alternatif');
+        }
+
+        // Ambil data nilai lengkap untuk alternatif yang cocok
+        $filteredNilais = Nilai::whereIn('kode_alternatif', $alternatifIds)
+            ->with('alternatif', 'kriteria')
             ->get();
 
-        // Urutkan berdasarkan urutan nilai dari target ke bawah
-        $nilaiData = $nilaiData->sortByDesc(function ($item) use ($target_nilai) {
-            return -abs($item->nilai - $target_nilai);
-        })->values();
+        // Mengelompokkan data berdasarkan alternatif dan memformat hasilnya
+        $result = $filteredNilais->groupBy('kode_alternatif')->map(function ($group) {
+            $alternatif = $group->first()->alternatif;
+            $kriterias = [];
 
-        // Ambil semua kode alternatif hasil filter
-        $filteredAlternatifIds = $nilaiData->pluck('kode_alternatif')->unique()->toArray();
+            foreach ($group as $nilaiItem) {
+                // Ambil deskripsi nilai dari model NilaiBobot
+                $deskripsiBobot = \App\Models\NilaiBobot::where('kode_kriteria', $nilaiItem->kode_kriteria)
+                    ->where('nilai', $nilaiItem->nilai)
+                    ->first();
 
-        // Ambil ulang semua data untuk alternatif yang sudah terurut
-        $allNilaiData = Nilai::with('alternatif', 'kriteria')
-            ->whereIn('kode_alternatif', $filteredAlternatifIds)
-            ->get();
-
-        // Pemetaan kode_kriteria ke nama field
-        $kategoriMap = [
-            'C01' => 'waktu',
-            'C02' => 'jarak',
-            'C03' => 'fasilitas'
-        ];
-
-        // Kelompokkan data
-        $groupedData = [];
-
-        foreach ($allNilaiData as $nilai) {
-            $kode_alternatif = $nilai->kode_alternatif;
-            $kategori = $kategoriMap[$nilai->kode_kriteria] ?? 'unknown';
-
-            if (!isset($groupedData[$kode_alternatif])) {
-                $groupedData[$kode_alternatif] = [
-                    'nama_alternatif' => $nilai->alternatif->nama_alternatif ?? '',
-                    'waktu' => null,
-                    'jarak' => null,
-                    'fasilitas' => null,
+                $kriterias[] = [
+                    'kode_kriteria' => $nilaiItem->kode_kriteria,
+                    'nama_kategori' => $nilaiItem->kriteria->nama_kriteria ?? $nilaiItem->kode_kriteria,
+                    'deskripsi'     => $deskripsiBobot->nama ?? $nilaiItem->nilai,
                 ];
             }
 
-            $groupedData[$kode_alternatif][$kategori] = $nilai->nilai;
+            return [
+                'nama_alternatif' => $alternatif->nama_alternatif,
+                'kriterias'       => $kriterias
+            ];
+        })->values();
+
+        // === 🧮 Hitung SAW hanya untuk kode_alternatif hasil filter ===
+        $kriterias = Kriteria::all()->keyBy('kode_kriteria');
+
+        $nilaiMatrix = [];
+        foreach (
+            Nilai::with('alternatif')
+                ->whereIn('kode_alternatif', $alternatifIds)
+                ->orderBy('kode_alternatif')
+                ->orderBy('kode_kriteria')
+                ->get() as $n
+        ) {
+            $nilaiMatrix[$n->kode_alternatif]['name'] = $n->alternatif->nama_alternatif;
+            $nilaiMatrix[$n->kode_alternatif]['value'][$n->kode_kriteria] = $n->nilai;
         }
 
-        // Susun hasil berdasarkan urutan alternatif dari $nilaiData
-        $finalData = [];
-        foreach ($nilaiData as $nilai) {
-            $kode = $nilai->kode_alternatif;
-            if (isset($groupedData[$kode])) {
-                $finalData[$kode] = $groupedData[$kode];
+        // cari min & max
+        $minmax = [];
+        foreach ($nilaiMatrix as $alt => $val) {
+            foreach ($val['value'] as $k => $v) {
+                $minmax[$k]['min'] = isset($minmax[$k]['min']) ? min($minmax[$k]['min'], $v) : $v;
+                $minmax[$k]['max'] = isset($minmax[$k]['max']) ? max($minmax[$k]['max'], $v) : $v;
             }
         }
 
-        return response()->json(array_values($finalData));
+        // normalisasi & terbobot
+        $total = [];
+        foreach ($nilaiMatrix as $alt => $val) {
+            $sum = 0;
+            foreach ($val['value'] as $k => $v) {
+                if (!isset($kriterias[$k])) continue;
+                $norm = strtolower($kriterias[$k]->atribut) == 'benefit'
+                    ? $v / $minmax[$k]['max']
+                    : $minmax[$k]['min'] / $v;
+                $sum += $norm * $kriterias[$k]->bobot / 100;
+            }
+            $total[$alt] = $sum;
+        }
+
+        // ranking
+        arsort($total);
+        $rankedTotal = [];
+        $no = 1;
+        foreach ($total as $kodeAlt => $val) {
+            $rankedTotal[] = [
+                'rank' => $no++,
+                'total' => $val,
+                'name' => $nilaiMatrix[$kodeAlt]['name'],
+                'kode_alternatif' => $kodeAlt,
+            ];
+        }
+
+        return response()->json([
+            'rankedTotal' => $rankedTotal, // hasil SAW
+            'result' => $result            // detail filter
+        ]);
     }
 }

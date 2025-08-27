@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\Profil;
-use App\Models\Deskripsi;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SpkController;
 use App\Http\Controllers\HasilController;
@@ -12,23 +10,14 @@ use App\Http\Controllers\KriteriaController;
 use App\Http\Controllers\DeskripsiController;
 use App\Http\Controllers\AlternatifController;
 use App\Http\Controllers\NilaiBobotController;
+use App\Http\Controllers\PengunjungController;
 
-Route::get('/', function () {
-    return view('Pengunjung.home');
-});
-Route::get('/profil', function () {
-    return view('Pengunjung.profil', [
-        'data' => Profil::all()
-    ]);
-});
-Route::get('/deskripsi', function () {
-    return view('Pengunjung.deskripsi', [
-        'data' => Deskripsi::all()
-    ]);
-});
-Route::get('/filter', function () {
-    return view('Pengunjung.filter');
-});
+Route::get('/', [PengunjungController::class, 'home']);
+Route::get('/profil', [PengunjungController::class, 'profil']);
+Route::get('/deskripsi', [PengunjungController::class, 'deskripsi']);
+// Route::get('/filter', [PengunjungController::class, 'filter']);
+Route::get('/rekomendasi', [PengunjungController::class, 'rekomendasi']);
+
 
 Route::get('/login', [LoginController::class, 'index'])->name('login')->middleware('guest');
 Route::post('/login', [LoginController::class, 'authenticate']);
@@ -48,5 +37,5 @@ Route::get('/dashboard/hasil', [SpkController::class, 'index'])->name('Dashboard
 Route::resource('/dashboard/deskripsi', DeskripsiController::class)->middleware('auth');
 Route::resource('/dashboard/profil', ProfilController::class)->middleware('auth');
 
-Route::get('/filter', [FilterController::class, 'index'])->name('Pengunjung.filter');
+Route::get('/filter', [FilterController::class, 'index']);
 Route::post('/filter-wisata', [FilterController::class, 'filter']);
