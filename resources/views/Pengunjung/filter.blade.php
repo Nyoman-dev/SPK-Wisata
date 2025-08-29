@@ -124,11 +124,12 @@
             <table class="w-full text-sm text-left rtl:text-right text-white">
                 <thead class="text-xs text-white uppercase bg-[#282626]">
                     <tr>
-                        <th class="px-6 py-3">Tempat Wisata (Alternatif)</th>
+                        <th class="px-6 py-3">Tempat Wisata</th>
                         <th class="px-6 py-3">Nilai SAW</th>
                         <th class="px-6 py-3">Jarak</th>
                         <th class="px-6 py-3">Waktu</th>
                         <th class="px-6 py-3">Fasilitas</th>
+                        <th class="px-6 py-3"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -140,6 +141,7 @@
                                 <td class="px-6 py-4">${krit_jarak}</td>
                                 <td class="px-6 py-4">${krit_waktu}</td>
                                 <td class="px-6 py-4">${krit_fasilitas}</td>
+                                <td class="px-6 py-4"><a href="/deskripsi" class="bg-[#29581F] text-[#F8C650] font-semibold text-sm py-2 px-6 rounded cursor-pointer">Deskripsi</a></td>
                             ` : `
                                 <td class="px-6 py-4">-</td>
                                 <td class="px-6 py-4">-</td>
