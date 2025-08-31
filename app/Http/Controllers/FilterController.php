@@ -192,60 +192,90 @@ class FilterController extends Controller
             ];
         })->values();
 
-        // === 🧮 Hitung SAW hanya untuk kode_alternatif hasil filter ===
-        $kriterias = Kriteria::all()->keyBy('kode_kriteria');
-
-        $nilaiMatrix = [];
-        foreach (
-            Nilai::with('alternatif')
-                ->whereIn('kode_alternatif', $alternatifIds)
-                ->orderBy('kode_alternatif')
-                ->orderBy('kode_kriteria')
-                ->get() as $n
-        ) {
-            $nilaiMatrix[$n->kode_alternatif]['name'] = $n->alternatif->nama_alternatif;
-            $nilaiMatrix[$n->kode_alternatif]['value'][$n->kode_kriteria] = $n->nilai;
+        // ===  Hitung SAW hanya untuk kode_alternatif hasil filter ===
+        $kriterias = [];
+        $alternatifs = [];
+        $nilais = [];
+        foreach (Kriteria::all() as $kriteria)
+            $kriterias[$kriteria->kode_kriteria] = $kriteria;
+        foreach (Alternatif::all() as $alternatif)
+            $alternatifs[$alternatif->kode_alternatif] = $alternatif;
+        foreach (Nilai::with('alternatif')->orderBy('kode_alternatif')->orderBy('kode_kriteria')->get() as $nilai) {
+            $nilais[$nilai->kode_alternatif]['name'] = $nilai->alternatif->nama_alternatif;
+            $nilais[$nilai->kode_alternatif]['value'][$nilai->kode_kriteria] = $nilai->nilai;
         }
 
-        // cari min & max
         $minmax = [];
-        foreach ($nilaiMatrix as $alt => $val) {
-            foreach ($val['value'] as $k => $v) {
-                $minmax[$k]['min'] = isset($minmax[$k]['min']) ? min($minmax[$k]['min'], $v) : $v;
-                $minmax[$k]['max'] = isset($minmax[$k]['max']) ? max($minmax[$k]['max'], $v) : $v;
-            }
-        }
-
-        // normalisasi & terbobot
+        $arr = [];
+        $normal = [];
+        $terbobot = [];
         $total = [];
-        foreach ($nilaiMatrix as $alt => $val) {
-            $sum = 0;
+        $rank = [];
+
+        foreach ($nilais as $key => $val) {
             foreach ($val['value'] as $k => $v) {
-                if (!isset($kriterias[$k])) continue;
-                $norm = strtolower($kriterias[$k]->atribut) == 'benefit'
-                    ? $v / $minmax[$k]['max']
-                    : $minmax[$k]['min'] / $v;
-                $sum += $norm * $kriterias[$k]->bobot / 100;
+                if (isset($kriterias[$k])) {
+                    $arr[$k][$key] = $v;
+                }
             }
-            $total[$alt] = $sum;
         }
 
-        // ranking
+        foreach ($arr as $key => $val) {
+            $minmax[$key]['min'] = min($val);
+            $minmax[$key]['max'] = max($val);
+        }
+
+        foreach ($nilais as $key => $val) {
+            foreach ($val['value'] as $k => $v) {
+                if (isset($kriterias[$k])) {
+                    $normal[$key][$k] = strtolower($kriterias[$k]->atribut) == 'Benefit' ? $v / $minmax[$k]['max'] : $minmax[$k]['min'] / $v;
+                }
+            }
+        }
+
+        foreach ($normal as $key => $val) {
+            foreach ($val as $k => $v) {
+                if (isset($kriterias[$k])) {
+                    $terbobot[$key][$k] = $v * $kriterias[$k]->bobot / 100;
+                }
+            }
+        }
+
+        foreach ($terbobot as $key => $val) {
+            $total[$key] = array_sum($val);
+        }
+
         arsort($total);
-        $rankedTotal = [];
+
         $no = 1;
-        foreach ($total as $kodeAlt => $val) {
-            $rankedTotal[] = [
-                'rank' => $no++,
-                'total' => $val,
-                'name' => $nilaiMatrix[$kodeAlt]['name'],
-                'kode_alternatif' => $kodeAlt,
+        foreach ($total as $key => $val) {
+            $rank[$key] = $no++;
+        }
+        $rankedTotal = [];
+        foreach ($rank as $kode_alternatif => $position) {
+            $rankedTotal[$kode_alternatif] = [
+                'rank' => $position,
+                'total' => $total[$kode_alternatif],
+                'name' => $nilais[$kode_alternatif]['name'],
+                'kode_alternatif' => $kode_alternatif,
             ];
         }
+        // ksort($total);
+        usort($rankedTotal, function ($a, $b) {
+            return $a['rank'] <=> $b['rank'];
+        });
+
+        // === Filter hasil SAW agar hanya kirim alternatif yang lolos filter ===
+        $filteredRankedTotal = array_filter($rankedTotal, function ($item) use ($alternatifIds) {
+            return in_array($item['kode_alternatif'], $alternatifIds->toArray());
+        });
+
+        // reindex array biar rapih (0,1,2,...)
+        $filteredRankedTotal = array_values($filteredRankedTotal);
 
         return response()->json([
-            'rankedTotal' => $rankedTotal, // hasil SAW
-            'result' => $result            // detail filter
+            'rankedTotal' => $filteredRankedTotal, // hanya alternatif sesuai filter
+            'result' => $result                    // detail filter
         ]);
     }
 }

@@ -98,69 +98,70 @@
     })
     .then(response => response.json())
     .then(data => {
-    console.log(data);
-    container.innerHTML = ''; // Kosongkan dulu setelah data diterima
+        console.log(data);
+        container.innerHTML = ''; // Kosongkan dulu setelah data diterima
 
-    // Periksa apakah data.rankedTotal dan data.result ada dan tidak kosong
-    if (!data.rankedTotal || data.rankedTotal.length === 0 || !data.result || data.result.length === 0) {
-        container.innerHTML = '<div class="text-center text-gray-600 py-8">Tidak ada data ditemukan.</div>';
-        return;
-    }
+        // Periksa apakah data.rankedTotal dan data.result ada dan tidak kosong
+        if (!data.rankedTotal || data.rankedTotal.length === 0 || !data.result || data.result.length === 0) {
+            container.innerHTML = '<div class="text-center text-gray-600 py-8">Tidak ada data ditemukan.</div>';
+            return;
+        }
 
-    // Ambil data dari 'result' untuk kriteria yang dipilih
-    // Karena 'result' adalah array 1 item, kita ambil item pertama
-    const resultItem = data.result[0];
-    const krit_jarak = resultItem.kriterias.find(k => k.nama_kategori === "jarak")?.deskripsi ?? "-";
-    const krit_waktu = resultItem.kriterias.find(k => k.nama_kategori === "waktu")?.deskripsi ?? "-";
-    const krit_fasilitas = resultItem.kriterias.find(k => k.nama_kategori === "fasilitas")?.deskripsi ?? "-";
-    const nama_alternatif_terpilih = resultItem.nama_alternatif;
+        // 🔹 Buat map nama_alternatif → deskripsi kriterianya
+        const resultMap = {};
+        data.result.forEach(item => {
+            resultMap[item.nama_alternatif] = {
+                jarak: item.kriterias.find(k => k.nama_kategori === "jarak")?.deskripsi ?? "-",
+                waktu: item.kriterias.find(k => k.nama_kategori === "waktu")?.deskripsi ?? "-",
+                fasilitas: item.kriterias.find(k => k.nama_kategori === "fasilitas")?.deskripsi ?? "-"
+            };
+        });
 
-    // Ambil data ranking dari 'rankedTotal'
-    const rankedData = data.rankedTotal;
+        // Ambil data ranking dari 'rankedTotal'
+        const rankedData = data.rankedTotal;
 
-    // Buat tabelnya
-    const tableHTML = `
-        <div class="relative overflow-x-auto">
-            <table class="w-full text-sm text-left rtl:text-right text-white">
-                <thead class="text-xs text-white uppercase bg-[#282626]">
-                    <tr>
-                        <th class="px-6 py-3">Tempat Wisata</th>
-                        <th class="px-6 py-3">Nilai SAW</th>
-                        <th class="px-6 py-3">Jarak</th>
-                        <th class="px-6 py-3">Waktu</th>
-                        <th class="px-6 py-3">Fasilitas</th>
-                        <th class="px-6 py-3"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${rankedData.map(item => `
-                        <tr class="bg-[#ede9d1] text-[#282626] border border-[#282626]">
-                            <td class="px-6 py-4 font-medium whitespace-nowrap">${item.name}</td>
-                            <td class="px-6 py-4">${item.total.toFixed(2)}</td>
-                            ${item.name === nama_alternatif_terpilih ? `
-                                <td class="px-6 py-4">${krit_jarak}</td>
-                                <td class="px-6 py-4">${krit_waktu}</td>
-                                <td class="px-6 py-4">${krit_fasilitas}</td>
-                                <td class="px-6 py-4"><a href="/deskripsi" class="bg-[#29581F] text-[#F8C650] font-semibold text-sm py-2 px-6 rounded cursor-pointer">Deskripsi</a></td>
-                            ` : `
-                                <td class="px-6 py-4">-</td>
-                                <td class="px-6 py-4">-</td>
-                                <td class="px-6 py-4">-</td>
-                            `}
+        // Buat tabelnya
+        const tableHTML = `
+            <div class="relative overflow-x-auto">
+                <table class="w-full text-sm text-left rtl:text-right text-white">
+                    <thead class="text-xs text-white uppercase bg-[#282626]">
+                        <tr>
+                            <th class="px-6 py-3">Tempat Wisata</th>
+                            <th class="px-6 py-3">Nilai SAW</th>
+                            <th class="px-6 py-3">Jarak</th>
+                            <th class="px-6 py-3">Waktu</th>
+                            <th class="px-6 py-3">Fasilitas</th>
+                            <th class="px-6 py-3"></th>
                         </tr>
-                    `).join('')}
-                </tbody>
-            </table>
-        </div>
-    `;
+                    </thead>
+                    <tbody>
+                        ${rankedData.map(item => {
+                            const krit = resultMap[item.name]; // cocokkan dengan hasil filter
+                            return `
+                                <tr class="bg-[#ede9d1] text-[#282626] border border-[#282626]">
+                                    <td class="px-6 py-4 font-medium whitespace-nowrap">${item.name}</td>
+                                    <td class="px-6 py-4">${item.total.toFixed(2)}</td>
+                                    <td class="px-6 py-4">${krit ? krit.jarak : "-"}</td>
+                                    <td class="px-6 py-4">${krit ? krit.waktu : "-"}</td>
+                                    <td class="px-6 py-4">${krit ? krit.fasilitas : "-"}</td>
+                                    <td class="px-6 py-4">
+                                        ${krit ? `<a href="/deskripsi" class="bg-[#29581F] text-[#F8C650] font-semibold text-sm py-2 px-6 rounded cursor-pointer">Deskripsi</a>` : ""}
+                                    </td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
 
-    container.innerHTML = tableHTML;
-})
-.catch(error => {
-    console.error('Gagal fetch data:', error);
-    container.innerHTML = '<div class="text-center text-red-600 py-8">Terjadi kesalahan saat memuat data.</div>';
+        container.innerHTML = tableHTML;
+    })
+    .catch(error => {
+        console.error('Gagal fetch data:', error);
+        container.innerHTML = '<div class="text-center text-red-600 py-8">Terjadi kesalahan saat memuat data.</div>';
+    });
 });
-});
-
 </script>
+
 </x-layout>
