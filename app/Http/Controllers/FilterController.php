@@ -228,7 +228,7 @@ class FilterController extends Controller
         foreach ($nilais as $key => $val) {
             foreach ($val['value'] as $k => $v) {
                 if (isset($kriterias[$k])) {
-                    $normal[$key][$k] = strtolower($kriterias[$k]->atribut) == 'Benefit' ? $v / $minmax[$k]['max'] : $minmax[$k]['min'] / $v;
+                    $normal[$key][$k] = strtolower($kriterias[$k]->atribut) == 'benefit' ? $v / $minmax[$k]['max'] : $minmax[$k]['min'] / $v;
                 }
             }
         }
