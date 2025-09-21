@@ -138,4 +138,11 @@ class PengunjungController extends Controller
             'rankedTotal' => $rankedTotal
         ]);
     }
+
+    public function detail($slug)
+    {
+        return view('Pengunjung.detail-wisata', [
+            'data' => Deskripsi::where('slug', $slug)->get()
+        ]);
+    }
 }

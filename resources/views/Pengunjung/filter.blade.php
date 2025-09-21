@@ -5,7 +5,7 @@
         <h1 class="text-[#E3FC61] font-bold text-3xl text-center py-10">Filter Wisata</h1>
     </section>
 
-    <div class="max-w-4xl mx-auto bg-[#EEEBD3] rounded-lg p-6 shadow-sm">
+    <div class="max-w-[930px] mx-auto bg-[#EEEBD3] rounded-lg p-6 shadow-sm">
         <form id="filterForm" class="flex flex-col sm:flex-row sm:items-center sm:space-x-4 mb-6">
             @csrf
             <div>
@@ -55,9 +55,9 @@
 
             <button
                 type="submit"
-                class="corsor-pointer mt-5 bg-[#29581F] text-[#F8C650] font-semibold text-sm py-2 px-6 rounded"
+                class="corsor-pointer mt-5 bg-[#29581F] text-[#F8C650] font-semibold text-sm py-2 px-4 rounded"
             >
-                Filter
+                Rekomendasi
             </button>
         </form>
 
@@ -98,7 +98,6 @@
     })
     .then(response => response.json())
     .then(data => {
-        console.log(data);
         container.innerHTML = ''; // Kosongkan dulu setelah data diterima
 
         // Periksa apakah data.rankedTotal dan data.result ada dan tidak kosong
@@ -136,6 +135,7 @@
                     </thead>
                     <tbody>
                         ${rankedData.map(item => {
+                            const slug = item.name.replace(/\s+/g, '-').toLowerCase();
                             const krit = resultMap[item.name]; // cocokkan dengan hasil filter
                             return `
                                 <tr class="bg-[#ede9d1] text-[#282626] border border-[#282626]">
@@ -145,7 +145,7 @@
                                     <td class="px-6 py-4">${krit ? krit.waktu : "-"}</td>
                                     <td class="px-6 py-4">${krit ? krit.fasilitas : "-"}</td>
                                     <td class="px-6 py-4">
-                                        ${krit ? `<a href="/deskripsi" class="bg-[#29581F] text-[#F8C650] font-semibold text-sm py-2 px-6 rounded cursor-pointer">Deskripsi</a>` : ""}
+                                        ${krit ? `<a href="/deskripsi/${slug}" class="bg-[#29581F] text-[#F8C650] font-semibold text-sm py-2 px-6 rounded cursor-pointer">Deskripsi</a>` : ""}
                                     </td>
                                 </tr>
                             `;

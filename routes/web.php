@@ -17,6 +17,7 @@ Route::get('/profil', [PengunjungController::class, 'profil']);
 Route::get('/deskripsi', [PengunjungController::class, 'deskripsi']);
 // Route::get('/filter', [PengunjungController::class, 'filter']);
 Route::get('/rekomendasi', [PengunjungController::class, 'rekomendasi']);
+Route::get('/deskripsi/{slug}', [PengunjungController::class, 'detail']);
 
 
 Route::get('/login', [LoginController::class, 'index'])->name('login')->middleware('guest');
