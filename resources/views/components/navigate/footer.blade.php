@@ -2,7 +2,7 @@
     <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
         <div class="sm:flex sm:items-center sm:justify-between">
             <a href="/" class="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
-                <span class="self-center text-2xl font-semibold whitespace-nowrap text-[#C8F0C8]">Pawaisata</span>
+                <span class="self-center text-2xl font-semibold whitespace-nowrap text-[#C8F0C8]">Parawisata</span>
             </a>
             <ul class="flex flex-wrap items-center mb-6 text-sm font-medium text-[#C8F0C8] sm:mb-0">
                 <li>
@@ -23,7 +23,7 @@
             </ul>
         </div>
         <hr class="my-6 border-[#142c0e] sm:mx-auto lg:my-8" />
-        <span class="block text-sm text-[#F8C650] sm:text-center">© 2023 <a href="/" class="hover:underline">Pawaisata</a>. All Rights Reserved.</span>
+        <span class="block text-sm text-[#F8C650] sm:text-center">© 2023 <a href="/"
+                class="hover:underline">Pawaisata</a>. All Rights Reserved.</span>
     </div>
 </footer>
-

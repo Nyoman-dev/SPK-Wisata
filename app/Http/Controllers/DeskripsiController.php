@@ -71,7 +71,7 @@ class DeskripsiController extends Controller
             'alamat' => 'required',
             'map' => 'required',
             'deskripsi' => 'required',
-            'gambar' => 'required|image|mimes:jpeg,png,jpg,gif'
+            // 'gambar' => 'required|image|mimes:jpeg,png,jpg,gif'
         ]);
         if ($request->hasFile('gambar')) {
             $filePath = $request->file('gambar')->store('images', 'public');
