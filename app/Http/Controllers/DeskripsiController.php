@@ -77,7 +77,7 @@ class DeskripsiController extends Controller
             $filePath = $request->file('gambar')->store('images', 'public');
             $validated['gambar'] = $filePath;
         }
-        Deskripsi::where('id', $deskripsi->id)->update($validated);
+        $deskripsi->update($validated);
         return redirect()->back()->with('success', 'Data berhasil diperbarui!');
     }
 
