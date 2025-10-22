@@ -6,7 +6,7 @@
     </section>
 
     <div class="max-w-[930px] mx-auto bg-[#EEEBD3] rounded-lg p-6 shadow-sm">
-        <form id="filterForm" class="flex flex-col sm:flex-row sm:items-center sm:space-x-4 mb-6">
+        <form id="filterForm" class="flex flex-col w-full sm:flex-row sm:items-center sm:space-x-4 mb-6">
             @csrf
             <div>
                 <label for="filter_jarak" class="text-[#18252D] font-semibold text-base mb-2 sm:mb-0">
@@ -45,8 +45,8 @@
             </div>
 
             <button type="submit"
-                class="corsor-pointer mt-5 bg-[#29581F] text-[#F8C650] font-semibold text-sm py-2 px-4 rounded">
-                Rekomendasi
+                class="corsor-pointer mt-5 bg-[#29581F] text-[#F8C650] font-semibold text-sm py-2 px-9 rounded">
+                Filter
             </button>
         </form>
 
@@ -133,17 +133,17 @@
                             const slug = item.name.replace(/\s+/g, '-').toLowerCase();
                             const krit = resultMap[item.name]; // cocokkan dengan hasil filter
                             return `
-                                    <tr class="bg-[#ede9d1] text-[#282626] border border-[#282626]">
-                                        <td class="px-6 py-4 font-medium whitespace-nowrap">${item.name}</td>
-                                        <td class="px-6 py-4">${item.total.toFixed(2)}</td>
-                                        <td class="px-6 py-4">${krit ? krit.jarak : "-"}</td>
-                                        <td class="px-6 py-4">${krit ? krit.waktu : "-"}</td>
-                                        <td class="px-6 py-4">${krit ? krit.fasilitas : "-"}</td>
-                                        <td class="px-6 py-4">
-                                            ${krit ? `<a href="/deskripsi/${slug}" class="bg-[#29581F] text-[#F8C650] font-semibold text-sm py-2 px-6 rounded cursor-pointer">Deskripsi</a>` : ""}
-                                        </td>
-                                    </tr>
-                                `;
+                                                                <tr class="bg-[#ede9d1] text-[#282626] border border-[#282626]">
+                                                                    <td class="px-6 py-4 font-medium whitespace-nowrap">${item.name}</td>
+                                                                    <td class="px-6 py-4">${item.total.toFixed(2)}</td>
+                                                                    <td class="px-6 py-4">${krit ? krit.jarak : "-"}</td>
+                                                                    <td class="px-6 py-4">${krit ? krit.waktu : "-"}</td>
+                                                                    <td class="px-6 py-4">${krit ? krit.fasilitas : "-"}</td>
+                                                                    <td class="px-6 py-4">
+                                                                        ${krit ? `<a href="/deskripsi/${slug}" class="bg-[#29581F] text-[#F8C650] font-semibold text-sm py-2 px-6 rounded cursor-pointer">Deskripsi</a>` : ""}
+                                                                    </td>
+                                                                </tr>
+                                                            `;
                         }).join('')}
                     </tbody>
                 </table>
